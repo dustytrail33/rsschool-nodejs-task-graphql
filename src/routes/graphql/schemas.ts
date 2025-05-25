@@ -1,8 +1,8 @@
 import { Type } from '@fastify/type-provider-typebox';
 import { GraphQLSchema } from 'graphql';
 import { PrismaClient } from '@prisma/client';
-import DataLoader from 'dataloader';
 import { queries } from './queries.js';
+import DataLoader from 'dataloader';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -25,7 +25,7 @@ export const createGqlResponseSchema = {
 
 export type Context = {
   prisma: PrismaClient;
-  loaders: {
+  resolvers: {
     userById: DataLoader<string, unknown>;
     profileByUserId: DataLoader<string, unknown>;
     profileById: DataLoader<string, unknown>;

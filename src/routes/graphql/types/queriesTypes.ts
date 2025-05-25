@@ -43,23 +43,23 @@ export const userType = new GraphQLObjectType({
     balance: { type: GraphQLFloat },
     profile: {
       type: profileType,
-      resolve: (_source: { id: string }, args, { loaders }: Context) =>
-        loaders.profileByUserId.load(_source.id),
+      resolve: (_source: { id: string }, args, { resolvers }: Context) =>
+        resolvers.profileByUserId.load(_source.id),
     },
     userSubscribedTo: {
       type: new GraphQLList(userInterfaceType),
-      resolve: (_source: { id: string }, args, { loaders }: Context) =>
-        loaders.userSubscribedTo.load(_source.id),
+      resolve: (_source: { id: string }, args, { resolvers }: Context) =>
+        resolvers.userSubscribedTo.load(_source.id),
     },
     subscribedToUser: {
       type: new GraphQLList(userInterfaceType),
-      resolve: (_source: { id: string }, args, { loaders }: Context) =>
-        loaders.subscribedToUser.load(_source.id),
+      resolve: (_source: { id: string }, args, { resolvers }: Context) =>
+        resolvers.subscribedToUser.load(_source.id),
     },
     posts: {
       type: new GraphQLList(postType),
-      resolve: (_source: { id: string }, args, { loaders }: Context) =>
-        loaders.postsByAuthorId.load(_source.id),
+      resolve: (_source: { id: string }, args, { resolvers }: Context) =>
+        resolvers.postsByAuthorId.load(_source.id),
     },
   }),
 });
@@ -72,8 +72,8 @@ export const profileType = new GraphQLObjectType({
     yearOfBirth: { type: GraphQLInt },
     memberType: {
       type: memberType,
-      resolve: (_source: { memberTypeId: MemberTypeId }, args, { loaders }: Context) =>
-        loaders.memberTypeById.load(_source.memberTypeId),
+      resolve: (_source: { memberTypeId: MemberTypeId }, args, { resolvers }: Context) =>
+        resolvers.memberTypeById.load(_source.memberTypeId),
     },
   }),
 });

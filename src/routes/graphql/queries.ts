@@ -17,12 +17,7 @@ export const queries = new GraphQLObjectType({
     users: {
       type: new GraphQLList(userType),
       resolve: async (_source, _args, { prisma }: Context) => {
-        return prisma.user.findMany({
-          include: {
-            subscribedToUser: true,
-            userSubscribedTo: true,
-          },
-        });
+        return prisma.user.findMany();
       },
     },
     user: {
@@ -32,8 +27,9 @@ export const queries = new GraphQLObjectType({
           type: new GraphQLNonNull(UUIDType),
         },
       },
-      resolve: (_source, { id }: { id: string }, { loaders }: Context) =>
-        loaders.userById.load(id),
+      resolve: async (_source, { id }: { id: string }, { resolvers }: Context) => {
+        return resolvers.userById.load(id);
+      },
     },
     profiles: {
       type: new GraphQLList(profileType),
@@ -46,8 +42,9 @@ export const queries = new GraphQLObjectType({
           type: new GraphQLNonNull(UUIDType),
         },
       },
-      resolve: (_source, { id }: { id: string }, { loaders }: Context) =>
-        loaders.profileById.load(id),
+      resolve: async (_source, { id }: { id: string }, { resolvers }: Context) => {
+        return resolvers.profileById.load(id);
+      },
     },
     posts: {
       type: new GraphQLList(postType),
@@ -60,8 +57,9 @@ export const queries = new GraphQLObjectType({
           type: new GraphQLNonNull(UUIDType),
         },
       },
-      resolve: (_source, { id }: { id: string }, { loaders }: Context) =>
-        loaders.postById.load(id),
+      resolve: async (_source, { id }: { id: string }, { resolvers }: Context) => {
+        return resolvers.postById.load(id);
+      },
     },
     memberTypes: {
       type: new GraphQLList(memberType),
@@ -74,8 +72,9 @@ export const queries = new GraphQLObjectType({
           type: new GraphQLNonNull(memberTypeId),
         },
       },
-      resolve: (_source, { id }: { id: MemberTypeId }, { loaders }: Context) =>
-        loaders.memberTypeById.load(id),
+      resolve: async (_source, { id }: { id: MemberTypeId }, { resolvers }: Context) => {
+        return resolvers.memberTypeById.load(id);
+      },
     },
   }),
 });

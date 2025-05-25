@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
 
-export function loaders(prisma: PrismaClient) {
+const resolvers = (prisma: PrismaClient) => {
   const userById = new DataLoader(async (ids: readonly string[]) => {
     const users = await prisma.user.findMany({
       where: {
@@ -129,4 +129,6 @@ export function loaders(prisma: PrismaClient) {
     postById,
     postsByAuthorId,
   };
-}
+};
+
+export default resolvers;
