@@ -3,6 +3,7 @@ import { GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { userQueries } from './queries/user.js';
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
+import { profileQueries } from './queries/profile.js';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -27,6 +28,8 @@ export type Context = {
   prisma: PrismaClient;
   loaders: {
     userById: DataLoader<string, unknown>;
+    profileByUserId: DataLoader<string, unknown>;
+    profileById: DataLoader<string, unknown>;
   };
 };
 
@@ -34,6 +37,7 @@ const query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
     ...userQueries,
+    ...profileQueries,
   }),
 });
 

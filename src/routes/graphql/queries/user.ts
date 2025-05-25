@@ -10,6 +10,7 @@ import {
 } from 'graphql';
 import { UUIDType } from '../types/uuid.js';
 import { Context } from '../schemas.js';
+import { profile } from './profile.js';
 
 const userInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'UserInterface',
@@ -17,6 +18,9 @@ const userInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
     id: { type: UUIDType },
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
+    profile: {
+      type: profile,
+    },
   }),
   resolveType: () => user.name,
 });
@@ -28,36 +32,24 @@ export const user = new GraphQLObjectType({
     id: { type: UUIDType },
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
+    profile: {
+      type: profile,
+      resolve: (_source: { id: string }, args, { loaders }: Context) =>
+        loaders.profileByUserId.load(_source.id),
+    },
   }),
 });
 
 export const userQueries = {
   users: {
     type: new GraphQLList(user),
-    resolve: async (
-      _source,
-      args,
-      { prisma, loaders }: Context,
-      info: GraphQLResolveInfo,
-    ) => {
-      const requestedFields = info.fieldNodes
-        .filter((fieldNode) => !!fieldNode.selectionSet)
-        .map((fieldNode) => {
-          return fieldNode
-            .selectionSet!.selections.map((selection) =>
-              selection.kind === Kind.FIELD ? selection.name.value : null,
-            )
-            .filter((selection) => selection !== null);
-        });
-
-      const subscribedToUser = requestedFields[0].includes('subscribedToUser');
-      const userSubscribedTo = requestedFields[0].includes('userSubscribedTo');
-
-      const users = await prisma.user.findMany({
-        include: { subscribedToUser, userSubscribedTo },
+    resolve: async (_source, _args, { prisma }: Context) => {
+      return prisma.user.findMany({
+        include: {
+          subscribedToUser: true,
+          userSubscribedTo: true,
+        },
       });
-
-      return users;
     },
   },
   user: {
