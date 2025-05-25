@@ -16,8 +16,8 @@ export const queries = new GraphQLObjectType({
   fields: () => ({
     users: {
       type: new GraphQLList(userType),
-      resolve: async (_source, _args, { prisma }: Context) => {
-        return prisma.user.findMany();
+      resolve: async (_source, _args, { prismaClient }: Context) => {
+        return prismaClient.user.findMany();
       },
     },
     user: {
@@ -33,7 +33,7 @@ export const queries = new GraphQLObjectType({
     },
     profiles: {
       type: new GraphQLList(profileType),
-      resolve: (_source, args, { prisma }: Context) => prisma.profile.findMany(),
+      resolve: (_source, args, { prismaClient }: Context) => prismaClient.profile.findMany(),
     },
     profile: {
       type: profileType,
@@ -48,7 +48,7 @@ export const queries = new GraphQLObjectType({
     },
     posts: {
       type: new GraphQLList(postType),
-      resolve: (_source, args, { prisma }: Context) => prisma.post.findMany(),
+      resolve: (_source, args, { prismaClient }: Context) => prismaClient.post.findMany(),
     },
     post: {
       type: postType,
@@ -63,7 +63,7 @@ export const queries = new GraphQLObjectType({
     },
     memberTypes: {
       type: new GraphQLList(memberType),
-      resolve: (_source, args, { prisma }: Context) => prisma.memberType.findMany(),
+      resolve: (_source, args, { prismaClient }: Context) => prismaClient.memberType.findMany(),
     },
     memberType: {
       type: memberType,

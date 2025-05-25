@@ -24,7 +24,7 @@ export const createGqlResponseSchema = {
 };
 
 export type Context = {
-  prisma: PrismaClient;
+  prismaClient: PrismaClient;
   resolvers: {
     userById: DataLoader<string, unknown>;
     profileByUserId: DataLoader<string, unknown>;

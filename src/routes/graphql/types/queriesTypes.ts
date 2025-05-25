@@ -16,8 +16,8 @@ export const userInterfaceType: GraphQLInterfaceType = new GraphQLInterfaceType(
   name: 'UserInterface',
   fields: () => ({
     id: { type: UUIDType },
-    name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
+    name: { type: GraphQLString },
     profile: {
       type: profileType,
     },
@@ -39,8 +39,8 @@ export const userType = new GraphQLObjectType({
   interfaces: [userInterfaceType],
   fields: () => ({
     id: { type: UUIDType },
-    name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
+    name: { type: GraphQLString },
     profile: {
       type: profileType,
       resolve: (_source: { id: string }, args, { resolvers }: Context) =>
@@ -68,8 +68,8 @@ export const profileType = new GraphQLObjectType({
   name: 'Profile',
   fields: () => ({
     id: { type: UUIDType },
-    isMale: { type: GraphQLBoolean },
     yearOfBirth: { type: GraphQLInt },
+    isMale: { type: GraphQLBoolean },
     memberType: {
       type: memberType,
       resolve: (_source: { memberTypeId: MemberTypeId }, args, { resolvers }: Context) =>
@@ -82,8 +82,8 @@ export const postType = new GraphQLObjectType({
   name: 'Post',
   fields: () => ({
     id: { type: UUIDType },
-    title: { type: GraphQLString },
     content: { type: GraphQLString },
+    title: { type: GraphQLString },
     authorId: { type: GraphQLString },
   }),
 });
@@ -91,11 +91,11 @@ export const postType = new GraphQLObjectType({
 export const memberTypeId = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
-    BASIC: {
-      value: 'BASIC',
-    },
     BUSINESS: {
       value: 'BUSINESS',
+    },
+    BASIC: {
+      value: 'BASIC',
     },
   },
 });
