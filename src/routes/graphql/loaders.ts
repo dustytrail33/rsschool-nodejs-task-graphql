@@ -36,9 +36,97 @@ export function loaders(prisma: PrismaClient) {
     return sortedInOriginalOrder;
   });
 
+  const memberTypeById = new DataLoader(async (ids: readonly string[]) => {
+    const memberTypes = await prisma.memberType.findMany({
+      where: {
+        id: { in: [...ids] },
+      },
+    });
+
+    const sortedInOriginalOrder = ids.map((id) =>
+      memberTypes.find((memberType) => memberType.id === id),
+    );
+    return sortedInOriginalOrder;
+  });
+
+  const userSubscribedTo = new DataLoader(async (subscriberIds: readonly string[]) => {
+    const users = await prisma.user.findMany({
+      where: {
+        subscribedToUser: {
+          some: {
+            subscriberId: { in: [...subscriberIds] },
+          },
+        },
+      },
+      include: { subscribedToUser: true },
+    });
+
+    const sortedInOriginalOrder = subscriberIds.map((subscriberId) =>
+      users.filter((user) =>
+        user.subscribedToUser.some(
+          (subscribedUser) => subscribedUser.subscriberId === subscriberId,
+        ),
+      ),
+    );
+
+    return sortedInOriginalOrder;
+  });
+
+  const subscribedToUser = new DataLoader(async (authorIds: readonly string[]) => {
+    const users = await prisma.user.findMany({
+      where: {
+        userSubscribedTo: {
+          some: {
+            authorId: { in: [...authorIds] },
+          },
+        },
+      },
+      include: { userSubscribedTo: true },
+    });
+
+    const sortedInOriginalOrder = authorIds.map((authorId) =>
+      users.filter((user) =>
+        user.userSubscribedTo.some((authorUser) => authorUser.authorId === authorId),
+      ),
+    );
+
+    return sortedInOriginalOrder;
+  });
+
+  const postById = new DataLoader(async (ids: readonly string[]) => {
+    const posts = await prisma.post.findMany({
+      where: {
+        id: { in: [...ids] },
+      },
+    });
+
+    const sortedInOriginalOrder = ids.map((id) => posts.find((post) => post.id === id));
+    return sortedInOriginalOrder;
+  });
+
+  const postsByAuthorId = new DataLoader(async (authorIds: readonly string[]) => {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: { in: [...authorIds] },
+      },
+    });
+
+    const sortedInOriginalOrder = authorIds.map((authorId) =>
+      posts.filter((post) => post.authorId === authorId),
+    );
+    posts.forEach((post) => postById.prime(post.id, post));
+
+    return sortedInOriginalOrder;
+  });
+
   return {
     userById,
     profileByUserId,
     profileById,
+    memberTypeById,
+    userSubscribedTo,
+    subscribedToUser,
+    postById,
+    postsByAuthorId,
   };
 }

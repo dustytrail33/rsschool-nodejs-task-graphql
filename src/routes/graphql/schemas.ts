@@ -1,9 +1,8 @@
 import { Type } from '@fastify/type-provider-typebox';
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { userQueries } from './queries/user.js';
+import { GraphQLSchema } from 'graphql';
 import { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
-import { profileQueries } from './queries/profile.js';
+import { queries } from './queries.js';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -30,17 +29,14 @@ export type Context = {
     userById: DataLoader<string, unknown>;
     profileByUserId: DataLoader<string, unknown>;
     profileById: DataLoader<string, unknown>;
+    postById: DataLoader<string, unknown>;
+    postsByAuthorId: DataLoader<string, unknown>;
+    userSubscribedTo: DataLoader<string, unknown>;
+    subscribedToUser: DataLoader<string, unknown>;
+    memberTypeById: DataLoader<string, unknown>;
   };
 };
 
-const query = new GraphQLObjectType({
-  name: 'Query',
-  fields: () => ({
-    ...userQueries,
-    ...profileQueries,
-  }),
-});
-
 export const gqlSchema = new GraphQLSchema({
-  query,
+  query: queries,
 });
