@@ -1,4 +1,10 @@
-import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import {
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLResolveInfo,
+  Kind,
+} from 'graphql';
 
 import {
   memberType,
@@ -16,8 +22,47 @@ export const queries = new GraphQLObjectType({
   fields: () => ({
     users: {
       type: new GraphQLList(userType),
-      resolve: async (_source, _args, { prismaClient }: Context) => {
-        return prismaClient.user.findMany();
+      resolve: async (
+        _source,
+        _args,
+        { prismaClient, resolvers }: Context,
+        info: GraphQLResolveInfo,
+      ) => {
+        // return prismaClient.user.findMany();
+        const selections = info.fieldNodes
+          .filter((fieldNode) => !!fieldNode.selectionSet)
+          .map((fieldNode) => {
+            return fieldNode
+              .selectionSet!.selections.map((selection) =>
+                selection.kind === Kind.FIELD ? selection.name.value : null,
+              )
+              .filter((selection) => selection !== null);
+          });
+
+        const include = {
+          subscribedToUser: selections[0].includes('subscribedToUser'),
+          userSubscribedTo: selections[0].includes('userSubscribedTo'),
+        };
+
+        const users = await prismaClient.user.findMany({ include });
+
+        const userMap = new Map(users.map((user) => [user.id, user]));
+
+        users.forEach((user) => {
+          if (include.subscribedToUser) {
+            const subscribers = user.subscribedToUser.map((s) =>
+              userMap.get(s.subscriberId),
+            );
+            resolvers.subscribedToUser.prime(user.id, subscribers);
+          }
+
+          if (include.userSubscribedTo) {
+            const authors = user.userSubscribedTo.map((s) => userMap.get(s.authorId));
+            resolvers.userSubscribedTo.prime(user.id, authors);
+          }
+        });
+
+        return users;
       },
     },
     user: {
@@ -33,7 +78,8 @@ export const queries = new GraphQLObjectType({
     },
     profiles: {
       type: new GraphQLList(profileType),
-      resolve: (_source, args, { prismaClient }: Context) => prismaClient.profile.findMany(),
+      resolve: (_source, args, { prismaClient }: Context) =>
+        prismaClient.profile.findMany(),
     },
     profile: {
       type: profileType,
@@ -63,7 +109,8 @@ export const queries = new GraphQLObjectType({
     },
     memberTypes: {
       type: new GraphQLList(memberType),
-      resolve: (_source, args, { prismaClient }: Context) => prismaClient.memberType.findMany(),
+      resolve: (_source, args, { prismaClient }: Context) =>
+        prismaClient.memberType.findMany(),
     },
     memberType: {
       type: memberType,
