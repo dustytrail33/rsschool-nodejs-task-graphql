@@ -28,7 +28,6 @@ export const queries = new GraphQLObjectType({
         { prismaClient, resolvers }: Context,
         info: GraphQLResolveInfo,
       ) => {
-        // return prismaClient.user.findMany();
         const selections = info.fieldNodes
           .filter((fieldNode) => !!fieldNode.selectionSet)
           .map((fieldNode) => {
