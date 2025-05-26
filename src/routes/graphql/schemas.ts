@@ -3,6 +3,7 @@ import { GraphQLSchema } from 'graphql';
 import { PrismaClient } from '@prisma/client';
 import { queries } from './queries.js';
 import DataLoader from 'dataloader';
+import { mutations } from './mutations.js';
 
 export const gqlResponseSchema = Type.Partial(
   Type.Object({
@@ -39,4 +40,5 @@ export type Context = {
 
 export const gqlSchema = new GraphQLSchema({
   query: queries,
+  mutation: mutations
 });
