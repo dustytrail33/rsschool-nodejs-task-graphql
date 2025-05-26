@@ -12,6 +12,16 @@ import { UUIDType } from './uuid.js';
 import { Context } from '../schemas.js';
 import { MemberTypeId } from '../../member-types/schemas.js';
 
+export const postType = new GraphQLObjectType({
+  name: 'Post',
+  fields: () => ({
+    id: { type: UUIDType },
+    content: { type: GraphQLString },
+    title: { type: GraphQLString },
+    authorId: { type: GraphQLString },
+  }),
+});
+
 export const userInterfaceType: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'UserInterface',
   fields: () => ({
@@ -75,16 +85,6 @@ export const profileType = new GraphQLObjectType({
       resolve: (_source: { memberTypeId: MemberTypeId }, args, { resolvers }: Context) =>
         resolvers.memberTypeById.load(_source.memberTypeId),
     },
-  }),
-});
-
-export const postType = new GraphQLObjectType({
-  name: 'Post',
-  fields: () => ({
-    id: { type: UUIDType },
-    content: { type: GraphQLString },
-    title: { type: GraphQLString },
-    authorId: { type: GraphQLString },
   }),
 });
 

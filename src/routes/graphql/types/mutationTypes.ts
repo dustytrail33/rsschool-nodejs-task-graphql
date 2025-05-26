@@ -1,7 +1,13 @@
-import { GraphQLFloat, GraphQLInputObjectType, GraphQLString } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLString,
+} from 'graphql';
 
 export const createUserType = new GraphQLInputObjectType({
-  name: 'CreateUserType',
+  name: 'CreateUserInput',
   fields: () => ({
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
@@ -9,7 +15,7 @@ export const createUserType = new GraphQLInputObjectType({
 });
 
 export const changeUserType = new GraphQLInputObjectType({
-  name: 'ChangeUserType',
+  name: 'ChangeUserInput',
   fields: () => ({
     name: { type: GraphQLString },
     balance: { type: GraphQLFloat },
@@ -21,23 +27,21 @@ export type UserData = {
   balance: number;
 };
 
-
-
 export const createPostType = new GraphQLInputObjectType({
-  name: 'CreatePostType',
+  name: 'CreatePostInput',
   fields: () => ({
-      title: { type: GraphQLString },
-  content: { type: GraphQLString },
-  authorId: { type: GraphQLString },
+    title: { type: GraphQLString },
+    content: { type: GraphQLString },
+    authorId: { type: GraphQLString },
   }),
 });
 
 export const changePostType = new GraphQLInputObjectType({
-  name: 'ChangePostType',
+  name: 'ChangePostInput',
   fields: () => ({
-      title: { type: GraphQLString },
-  content: { type: GraphQLString },
-  authorId: { type: GraphQLString },
+    title: { type: GraphQLString },
+    content: { type: GraphQLString },
+    authorId: { type: GraphQLString },
   }),
 });
 
@@ -45,4 +49,31 @@ export type PostData = {
   title: string;
   content: string;
   authorId: string;
+};
+
+export const createProfileType = new GraphQLInputObjectType({
+  name: 'CreateProfileInput',
+  fields: () => ({
+    isMale: { type: GraphQLBoolean },
+    yearOfBirth: { type: GraphQLInt },
+    userId: { type: GraphQLString },
+    memberTypeId: { type: GraphQLString },
+  }),
+});
+
+export const changeProfileType = new GraphQLInputObjectType({
+  name: 'ChangeProfileInput',
+  fields: () => ({
+    isMale: { type: GraphQLBoolean },
+    yearOfBirth: { type: GraphQLInt },
+    userId: { type: GraphQLString },
+    memberTypeId: { type: GraphQLString },
+  }),
+});
+
+export type ProfileData = {
+  isMale: boolean;
+  yearOfBirth: number;
+  userId: string;
+  memberTypeId: string;
 };
